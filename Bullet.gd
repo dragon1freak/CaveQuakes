@@ -9,6 +9,9 @@ func _physics_process(delta):
 		hit(collision)
 
 func hit(collision):
+	if collision.collider.is_in_group("enemies"):
+		print("Do things to the enemy")
+		collision.collider.hit()
 	queue_free()
 
 func _on_VisibilityNotifier2D_screen_exited():

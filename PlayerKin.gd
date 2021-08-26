@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 export var MAX_SPEED : float = 500
 export var ACCELERATION : float = 2000
-export var accuracy : float = 10
+export var accuracy : float = 0.1
 var can_fire : bool = true
 export var fire_rate : float = 0.1
 var motion : Vector2 = Vector2.ZERO
@@ -44,7 +44,7 @@ func fire():
 	can_fire = false
 	var bullet_instance = bullet.instance()
 	bullet_instance.position = $Gun.global_position
-	bullet_instance.direction = $Gun.global_position.direction_to(get_global_mouse_position() + Vector2(rng.randf_range(-accuracy, accuracy), rng.randf_range(-accuracy, accuracy)))
+	bullet_instance.direction = $Gun.global_position.direction_to(get_global_mouse_position()) + Vector2(rng.randf_range(-accuracy, accuracy), rng.randf_range(-accuracy, accuracy))
 
 	get_tree().get_root().add_child(bullet_instance)
 
