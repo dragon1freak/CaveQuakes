@@ -7,10 +7,6 @@ var target_world : String
 var player : Area2D
 var next_spawn_point : String
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-
 func level_ready(level : Node2D):
 	current_world = level
 	if target_world:

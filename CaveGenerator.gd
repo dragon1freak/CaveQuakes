@@ -17,7 +17,9 @@ func _ready():
 	clear()
 	generateroomlist()
 	seedRoom()
-	runAutomata(10)
+	runAutomata()
+	createPlayerSpawn()
+	WorldManager.level_ready()
 
 # Generates the array used to contain the room
 func generateroomlist() -> void:
@@ -67,6 +69,11 @@ func checkQuadrant(widthStart, widthEnd, heightStart, heightEnd):
 			else:
 				cells[x][y] = floor_char
 				_set_autotile(y, x, false)
+
+func createPlayerSpawn():
+	for x in range(height / 2 - 4, height / 2 + 4):
+		for y in range(0, 5):
+			_set_autotile(y, x, false)
 
 func clear() -> void:
 	self.tile_map.clear()

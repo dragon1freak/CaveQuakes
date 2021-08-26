@@ -3,6 +3,7 @@ extends KinematicBody2D
 export var speed : float = 50
 export var health : int = 3
 export var projectile_speed : float = 200
+export var spread_angle : int = 15
 export var attack_speed : float = 1
 export var attack_range : float = 16 * 8
 export var follow_range : float = attack_range * 1.5
@@ -27,7 +28,7 @@ func _physics_process(delta):
 			attack()
 
 func isInWall():
-	var tile_id = tile_map.get_cellv(tile_map.world_to_map(position))
+	var tile_id = tile_map.get_cellv(tile_map.world_to_map(position - position.direction_to(player.position).normalized() * 16))
 	return tile_id == WALL
 
 func tick(delta):
@@ -38,16 +39,16 @@ func attack():
 	print("pew pew")
 	attack_tick = 0
 	var dir_to_player = self.global_position.direction_to(player.global_position)
+	fire(dir_to_player)
+	fire(dir_to_player.rotated(deg2rad(spread_angle)))
+	fire(dir_to_player.rotated(deg2rad(-spread_angle)))
+
+func fire(fire_direction : Vector2 = Vector2.ZERO, fire_position : Vector2 = position):
 	var bullet_instance = bullet.instance()
-	bullet_instance.position = self.global_position
-	bullet_instance.direction = self.global_position.direction_to(player.global_position)
+	bullet_instance.position = fire_position
+	bullet_instance.direction = fire_direction
 	bullet_instance.speed = projectile_speed
 	get_tree().get_root().add_child(bullet_instance)
-	var side_bullet_instance = bullet.instance()
-	side_bullet_instance.position = self.global_position
-	side_bullet_instance.direction = dir_to_player.rotated(deg2rad(15))
-	side_bullet_instance.speed = projectile_speed
-	get_tree().get_root().add_child(side_bullet_instance)
 
 func take_damage(damage : int = 1):
 	health -= damage
