@@ -40,14 +40,6 @@ func _physics_process(delta):
 	motion = move_and_slide(motion)
 	$Gun.look_at(get_global_mouse_position())
 
-func fire():
-	can_fire = false
-	var bullet_instance = bullet.instance()
-	bullet_instance.position = $Gun.global_position
-	bullet_instance.direction = $Gun.global_position.direction_to(get_global_mouse_position()) + Vector2(rng.randf_range(-accuracy, accuracy), rng.randf_range(-accuracy, accuracy))
-
-	get_tree().get_root().add_child(bullet_instance)
-
 func get_input_axis() -> Vector2:
 	var input : Vector2 = Vector2(
 			Input.get_action_strength("right") - Input.get_action_strength("left"), 
@@ -64,3 +56,13 @@ func apply_friction(friction : float) -> void:
 func apply_movement(movement : Vector2) -> void:
 	motion += movement
 	motion = motion.clamped(MAX_SPEED)
+
+func fire():
+	can_fire = false
+	var bullet_instance = bullet.instance()
+	bullet_instance.position = $Gun.global_position
+	bullet_instance.direction = $Gun.global_position.direction_to(get_global_mouse_position()) + Vector2(rng.randf_range(-accuracy, accuracy), rng.randf_range(-accuracy, accuracy))
+	get_tree().get_root().add_child(bullet_instance)
+
+func take_damage(damage : int = 1):
+	print("OW")

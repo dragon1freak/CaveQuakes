@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 var direction : Vector2 = Vector2.ZERO
-export var speed : int = 500
+export var speed : int = 200
 
 func _physics_process(delta):
 	var collision = move_and_collide(direction * speed * delta)
