@@ -3,7 +3,7 @@ extends Node
 onready var viewport : Viewport = get_tree().root
 
 export var default_viewport_size : Vector2 = Vector2(384, 216)
-export var zoom_level : int = 4
+export var zoom_level : int = 3
 var resolutions : Array
 var last_resolution_index : int
 
@@ -12,6 +12,8 @@ func _ready():
 	resolutions =  [default_viewport_size * 4,  Vector2(1280, 720), Vector2(1024, 768), Vector2(1280, 1024), Vector2(1360, 768), Vector2(1366, 768)]
 	resolution_change(1)
 
+func set_player_health(health : int):
+	$HealthBar.value = max(0, health)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("cycle_res") and !OS.window_fullscreen:

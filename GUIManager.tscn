@@ -1,7 +1,18 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://GUIManager.gd" type="Script" id=1]
+[ext_resource path="res://cave_GB.png" type="Texture" id=2]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource( 1 )
-zoom_level = 3
+
+[node name="HealthBar" type="TextureProgress" parent="."]
+modulate = Color( 0.219608, 1, 0, 1 )
+margin_right = 64.0
+margin_bottom = 16.0
+value = 100.0
+texture_progress = ExtResource( 2 )
+nine_patch_stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}

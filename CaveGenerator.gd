@@ -8,6 +8,10 @@ var cells = []
 var wall_char = "#"
 var floor_char = " "
 var rng = RandomNumberGenerator.new()
+enum {WALL, FLOOR}
+
+var objective : PackedScene = preload("res://Objective.tscn")
+var gate : PackedScene = preload("res://Exit.tscn")
 
 var tile_map : TileMap
 
@@ -16,10 +20,13 @@ func _ready():
 	rng.randomize()
 	clear()
 	generateroomlist()
+	var objective_positions = placeObjectives(1)
 	seedRoom()
+	clearObjectivePositions(objective_positions)
 	runAutomata()
 	createPlayerSpawn()
-	WorldManager.level_ready()
+
+	WorldManager.level_ready(tile_map)
 
 # Generates the array used to contain the room
 func generateroomlist() -> void:
@@ -27,12 +34,14 @@ func generateroomlist() -> void:
 		cells.append([])
 		for y in width:
 			cells[x].append(floor_char)
+			_set_autotile(y, x, false)
 
 func seedRoom() -> void:
 	for x in height:
 		for y in width:
 			if rng.randf() <= wall_percent/100 and !(x in [(height / 2) - 1, height / 2, (height / 2) - 1]):
 				cells[x][y] = wall_char
+				_set_autotile(y, x)
 	
 
 func runAutomata(iterations : int = 4) -> void: 
@@ -72,8 +81,39 @@ func checkQuadrant(widthStart, widthEnd, heightStart, heightEnd):
 
 func createPlayerSpawn():
 	for x in range(height / 2 - 4, height / 2 + 4):
-		for y in range(0, 5):
+		for y in range(0, 15):
 			_set_autotile(y, x, false)
+	var new_gate = gate.instance()
+	new_gate.global_position = Vector2(0, height * tile_map.cell_size.y / 2 - 4 * tile_map.cell_size.y)
+	get_tree().get_root().call_deferred("add_child", new_gate)
+
+# Check if its too close to other objectives in future
+var objective_radius : int = 6
+func placeObjectives(amount : int = 3):
+	var objective_positions = []
+	for i in amount:
+		var placement_position = Vector2.ZERO
+		while !placement_position:
+			var test_position = Vector2(rng.randi_range(width * tile_map.cell_size.x / 4, width * tile_map.cell_size.x - tile_map.cell_size.x), rng.randi_range(objective_radius * tile_map.cell_size.y, height * tile_map.cell_size.y - tile_map.cell_size.y))
+			var tile_id = tile_map.get_cellv(tile_map.world_to_map(test_position))
+			if tile_id == FLOOR:
+				placement_position = test_position
+		objective_positions.push_back(placement_position)
+		var obj = objective.instance()
+		obj.position = placement_position
+		get_tree().get_root().call_deferred("add_child", obj)
+	return objective_positions
+
+func clearObjectivePositions(positions):
+	for p in positions:
+		var cell_coords = tile_map.world_to_map(p)
+		var space_start : Vector2 = Vector2(max(1, cell_coords.x - objective_radius), max(1, cell_coords.y - objective_radius))
+		var space_end : Vector2 = Vector2(min(tile_map.get_used_rect().size.x - 1, cell_coords.x + objective_radius), min(tile_map.get_used_rect().size.y - 1, cell_coords.y + objective_radius))
+		
+		for x in range(space_start.x, space_end.x):
+			for y in range(space_start.y, space_end.y):
+				cells[y][x] = floor_char
+				_set_autotile(x, y, false)
 
 func clear() -> void:
 	self.tile_map.clear()
