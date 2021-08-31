@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://caveBG_GB.png" type="Texture" id=1]
+[ext_resource path="res://Textures/Bullet.png" type="Texture" id=1]
 [ext_resource path="res://Bullet.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
@@ -17,7 +17,7 @@ speed = 750
 shape = SubResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
-modulate = Color( 1, 0.866667, 0, 1 )
-position = Vector2( -1.19209e-07, 0 )
-scale = Vector2( 0.0833333, 0.0833333 )
+position = Vector2( 0, 8.9407e-08 )
+scale = Vector2( 0.666667, 0.666667 )
+z_as_relative = false
 texture = ExtResource( 1 )

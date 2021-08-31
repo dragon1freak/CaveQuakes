@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/BatShoot.ogg-e36c349637331b9d85ca300c64a5a18e.oggstr"
+
+[deps]
+
+source_file="res://Sounds/BatShoot.ogg"
+dest_files=[ "res://.import/BatShoot.ogg-e36c349637331b9d85ca300c64a5a18e.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

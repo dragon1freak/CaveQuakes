@@ -36,6 +36,7 @@ func tick(delta):
 	attack_tick += delta
 
 func attack():
+	$Shoot.play()
 	is_following = false
 	attack_tick = 0
 	var dir_to_player = self.global_position.direction_to(player.global_position)

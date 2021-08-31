@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 export var MAX_SPEED : float = 200
-export var MAX_HEALTH : int = 60
+export var MAX_HEALTH : int = 100
 export var MAX_ACCELERATION : float = 2000
 
 var speed : float = MAX_SPEED
@@ -16,6 +16,8 @@ var can_plant : bool = false
 var planted : bool = false
 var plant_target = null
 var motion : Vector2 = Vector2.ZERO
+var dead : bool = false
+var can_damage : bool = false
 
 var bullet = preload("res://Bullet.tscn")
 var harvester = preload("res://Harvester.tscn")
@@ -23,10 +25,10 @@ var rng = RandomNumberGenerator.new()
 
 var objectives = []
 onready var pointers = get_tree().get_nodes_in_group("pointers")
-#onready var camera : Camera2D = $Camera2D
-#onready var tilemap : TileMap = get_parent().get_node("TileMap")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	WorldManager.player_ready(self)
 	rng.randomize()
 	var camera : Camera2D = $Camera2D
 	if camera:
@@ -83,6 +85,7 @@ func apply_movement(movement : Vector2) -> void:
 	motion = motion.clamped(speed)
 
 func fire():
+	$Sounds/Shoot.play()
 	can_fire = false
 	var bullet_instance = bullet.instance()
 	bullet_instance.position = $Gun.global_position
@@ -90,14 +93,19 @@ func fire():
 	get_tree().get_root().add_child(bullet_instance)
 
 func take_damage(damage : int = 1):
-	health -= damage
-	GuiManager.set_player_health(float(health) / float(MAX_HEALTH) * 100)
-	if health <= 0:
-		print("Oh no :(")
-		get_tree().set_group("enemies", "player", null)
-		get_tree().set_group("harvesters", "player", null)
-		queue_free()
-	print("OW")
+	if can_damage:
+		if $Camera2D.trauma <= 0.1:
+			$Camera2D.add_trauma(0.5)
+		$Sounds/Hurt.play()
+		health -= damage
+		GuiManager.set_player_health(float(health) / float(MAX_HEALTH) * 100)
+		if health <= 0 and !dead:
+			dead = true
+			get_tree().set_group("enemies", "player", null)
+			get_tree().set_group("harvesters", "player", null)
+			self.visible = false
+			GuiManager.toggle_pause_menu(true)
+			set_physics_process(false)
 
 func set_obj_pointers():
 	objectives = get_tree().get_nodes_in_group("objectives")

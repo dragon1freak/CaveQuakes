@@ -11,8 +11,13 @@ config_version=4
 [application]
 
 config/name="CavernQuake"
-run/main_scene="res://Levels/Main.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://Levels/MainMenu.tscn"
+config/icon="res://Textures/NestIcon.png"
+config/windows_native_icon="res://Textures/Nest.ico"
+
+[audio]
+
+mix_rate=48000
 
 [autoload]
 
@@ -22,8 +27,12 @@ GuiManager="*res://GUIManager.tscn"
 
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/width=512
+window/size/height=288
+
+[global]
+
+mix=false
 
 [input]
 

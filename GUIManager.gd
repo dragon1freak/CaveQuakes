@@ -9,11 +9,11 @@ var last_resolution_index : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	resolutions =  [default_viewport_size * 4,  Vector2(1280, 720), Vector2(1024, 768), Vector2(1280, 1024), Vector2(1360, 768), Vector2(1366, 768)]
+	resolutions = [default_viewport_size * 4,  Vector2(1280, 720), Vector2(1024, 768), Vector2(1280, 1024), Vector2(1360, 768), Vector2(1366, 768)]
 	resolution_change(1)
 
 func set_player_health(health : int):
-	$HealthBar.value = max(0, health)
+	$GUI/HealthBar.value = max(0, health)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("cycle_res") and !OS.window_fullscreen:
@@ -36,3 +36,36 @@ func resolution_change(resolution_index: int):
 	last_resolution_index = resolution_index
 	print("Viewport: " + String(viewport.size))
 	print(OS.window_size)
+
+func toggle_pause_menu(died : bool = false):
+	$GUI/PauseMenu/VBoxContainer/MenuText.bbcode_text = "[center]You've beaten " + str(WorldManager.difficulty + 1) + " levels![center]" if !died else "[center]You survived " + str(WorldManager.difficulty) + " levels...[center]"
+	$GUI/PauseMenu/VBoxContainer/HBoxContainer/VBoxContainer/Next.visible = !died
+	$GUI/PauseMenu/VBoxContainer/HBoxContainer/VBoxContainer/Retry.visible = died
+	$GUI/PauseMenu.visible = !$GUI/PauseMenu.visible
+
+func toggle_gui():
+	$GUI.visible = !$GUI.visible
+
+func toggle_dettimer(show : bool = false):
+	$DetTimer.visible = show
+
+func set_dettimer_text(text : String = ""):
+	$DetTimer/VBoxContainer/Timer.text = text
+
+func _on_Quit_pressed():
+	$Select.play()
+	get_tree().quit()
+
+func _on_Next_pressed():
+	$Select.play()
+	WorldManager.next_level()
+
+func _on_Menu_pressed():
+	$Select.play()
+	print("Go to main menu")
+
+func _on_Retry_pressed():
+	$Select.play()
+	WorldManager.difficulty = -1
+	WorldManager.next_level()
+	print("Reset everything")

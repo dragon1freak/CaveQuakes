@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/DFS-DemoRaceLower.ogg-6edd80d05fd84671f7e5cf974f4efa4b.oggstr"
+
+[deps]
+
+source_file="res://Sounds/DFS-DemoRaceLower.ogg"
+dest_files=[ "res://.import/DFS-DemoRaceLower.ogg-6edd80d05fd84671f7e5cf974f4efa4b.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

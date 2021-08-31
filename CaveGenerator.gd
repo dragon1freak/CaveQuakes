@@ -1,7 +1,11 @@
 extends Node
 
-export var width : int
-export var height : int
+export var min_width : int = 50
+export var max_width : int = 200
+export var min_height : int = 25
+export var max_height : int = 100
+var width : int
+var height : int
 export var wall_percent : float
 
 var cells = []
@@ -10,17 +14,29 @@ var floor_char = " "
 var rng = RandomNumberGenerator.new()
 enum {WALL, FLOOR}
 
+export var MAX_OBJECTIVES : int = 5
 var objective : PackedScene = preload("res://Objective.tscn")
 var gate : PackedScene = preload("res://Exit.tscn")
 
 var tile_map : TileMap
 
 func _ready():
+	width = min_width
+	height = min_height
+
+func generate_level():
+	var difficulty : int = WorldManager.difficulty
 	self.tile_map = get_parent() as TileMap
 	rng.randomize()
+	wall_percent = rng.randi_range(25, 35)
+
+	if difficulty != 0 and width < max_width:
+			width += 10
+			height += 5
+
 	clear()
 	generateroomlist()
-	var objective_positions = placeObjectives(1)
+	var objective_positions = placeObjectives(min(max((difficulty + 1) / 2, 1), MAX_OBJECTIVES))
 	seedRoom()
 	clearObjectivePositions(objective_positions)
 	runAutomata()
@@ -85,7 +101,7 @@ func createPlayerSpawn():
 			_set_autotile(y, x, false)
 	var new_gate = gate.instance()
 	new_gate.global_position = Vector2(0, height * tile_map.cell_size.y / 2 - 4 * tile_map.cell_size.y)
-	get_tree().get_root().call_deferred("add_child", new_gate)
+	get_tree().get_current_scene().call_deferred("add_child", new_gate)
 
 # Check if its too close to other objectives in future
 var objective_radius : int = 6
