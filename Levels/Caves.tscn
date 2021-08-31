@@ -1,8 +1,8 @@
 [gd_scene load_steps=22 format=2]
 
-[ext_resource path="res://Mouse.tscn" type="PackedScene" id=1]
-[ext_resource path="res://PlayerKin.tscn" type="PackedScene" id=2]
-[ext_resource path="res://CaveGenerator.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Mouse.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Player/PlayerKin.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/CaveGenerator.gd" type="Script" id=3]
 [ext_resource path="res://Textures/Walls.png" type="Texture" id=4]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]

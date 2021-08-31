@@ -23,7 +23,7 @@ mix_rate=48000
 
 WorldManager="*res://Global/WorldManager.tscn"
 PlayerData="*res://Global/PlayerData.gd"
-GuiManager="*res://GUIManager.tscn"
+GuiManager="*res://Global/GUIManager.tscn"
 
 [display]
 
@@ -97,4 +97,4 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 2d/snapping/use_gpu_pixel_snap=true
-environment/default_environment="res://default_env.tres"
+environment/default_environment="res://Old/default_env.tres"

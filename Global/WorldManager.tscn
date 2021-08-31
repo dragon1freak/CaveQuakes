@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Global/WorldManager.gd" type="Script" id=1]
-[ext_resource path="res://caveBG_GB.png" type="Texture" id=2]
+[ext_resource path="res://Old/caveBG_GB.png" type="Texture" id=2]
 [ext_resource path="res://Sounds/DFS-DemoRaceLower.ogg" type="AudioStream" id=3]
 [ext_resource path="res://Sounds/Rumble.ogg" type="AudioStream" id=4]
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Levels/MainMenu.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/Kenney Mini Square.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://ButtonFont.tres" type="DynamicFont" id=3]
-[ext_resource path="res://HeaderFont.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Fonts/ButtonFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Fonts/HeaderFont.tres" type="DynamicFont" id=4]
 [ext_resource path="res://Sounds/Select.ogg" type="AudioStream" id=5]
+[ext_resource path="res://Scenes/Mouse.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Textures/Player.png" type="Texture" id=7]
 [ext_resource path="res://Textures/Harvester.png" type="Texture" id=8]
 [ext_resource path="res://Textures/Gun.png" type="Texture" id=9]
@@ -88,7 +89,6 @@ custom_fonts/font = ExtResource( 4 )
 text = "Options:"
 
 [node name="Main" type="HBoxContainer" parent="CanvasLayer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 alignment = 1
@@ -247,6 +247,8 @@ stretch_mode = 6
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CanvasLayer3" parent="." instance=ExtResource( 6 )]
 
 [connection signal="pressed" from="CanvasLayer/Main/VBoxContainer/HBoxContainer/VBoxContainer/Start" to="." method="_on_Start_pressed"]
 [connection signal="pressed" from="CanvasLayer/Main/VBoxContainer/HBoxContainer/VBoxContainer/Options" to="." method="_on_Options_pressed"]

@@ -5,7 +5,7 @@ onready var current_world : Node2D = get_tree().get_current_scene()
 var tile_map : TileMap
 var target_world : String
 onready var player : KinematicBody2D
-var boulder : PackedScene = preload("res://Boulder.tscn")
+var boulder : PackedScene = preload("res://Scenes/Boulder.tscn")
 var exit : Area2D
 var next_spawn_point : String
 var objective_count : int
@@ -15,8 +15,8 @@ var spawn_delay : float = 0.25
 var quake_timing : float = 0.2
 var quaking : bool = false
 
-var walker : PackedScene = preload("res://Enemy.tscn")
-var flyer : PackedScene = preload("res://Shooter.tscn")
+var walker : PackedScene = preload("res://Scenes/Enemies/Enemy.tscn")
+var flyer : PackedScene = preload("res://Scenes/Enemies/Shooter.tscn")
 export var difficulty : int = 0
 var swarm : bool = false
 var MAX_WALKERS_COUNT : int = 4
