@@ -160,7 +160,6 @@ __meta__ = {
 }
 
 [node name="Quit" type="Button" parent="GUI/PauseMenu/VBoxContainer/HBoxContainer/VBoxContainer"]
-visible = false
 margin_top = 72.0
 margin_right = 54.0
 margin_bottom = 96.0

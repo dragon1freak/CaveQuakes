@@ -51,8 +51,8 @@ func _unhandled_input(event):
 	if event.is_action_pressed("cycle_res") and !OS.window_fullscreen:
 		var index : int = resolutions.find(OS.window_size)
 		resolution_change(index + 1 if index != resolutions.size() - 1 else 0)
-#	elif event.is_action_pressed("fullscreen"):
-#		toggle_fullscreen()
+	elif event.is_action_pressed("fullscreen"):
+		toggle_fullscreen()
 
 func resolution_change(resolution_index: int):
 	var new_resolution : Vector2 = resolutions[resolution_index]
