@@ -7,7 +7,7 @@
 extents = Vector2( 8, 8 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 24, 24 )
+extents = Vector2( 8, 8 )
 
 [sub_resource type="Animation" id=3]
 resource_name = "RockFall"
@@ -102,8 +102,9 @@ shape = SubResource( 1 )
 disabled = true
 
 [node name="Shadow" type="Sprite" parent="."]
-modulate = Color( 0, 0, 0, 0.784314 )
+modulate = Color( 0, 0, 0, 0 )
 position = Vector2( 0, 2.38419e-07 )
+scale = Vector2( 0.4, 0.4 )
 texture = ExtResource( 1 )
 
 [node name="Rock" type="Sprite" parent="."]

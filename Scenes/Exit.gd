@@ -6,14 +6,12 @@ func open_the_exit():
 	$Gate.frame = 0
 	$Gate.get_node("StaticBody2D/CollisionShape2D").set_deferred("disabled", true)
 	open = true
-	$Gate.visible = false
 	$ExitArea.set_deferred("disabled", false)
 
 func close_the_exit():
 	$Gate.frame = 1
 	$Gate.get_node("StaticBody2D/CollisionShape2D").set_deferred("disabled", false)
 	open = false
-	$Gate.visible = true
 	$ExitArea.set_deferred("disabled", true)
 
 func _on_Exit_body_entered(body):

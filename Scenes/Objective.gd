@@ -6,7 +6,6 @@ func _ready():
 	add_to_group("objectives")
 
 func harvest():
-	print("we got harvested")
 	emit_signal("harvested")
 	WorldManager.harvest_objective()
 	queue_free()

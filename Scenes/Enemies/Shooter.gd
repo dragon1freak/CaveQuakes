@@ -11,7 +11,7 @@ var is_following : bool = true
 
 var bullet = preload("res://Scenes/Enemies/EnemyBullet.tscn")
 onready var player : KinematicBody2D = get_tree().get_current_scene().get_node("Player")
-onready var tile_map : TileMap = get_tree().get_current_scene().get_node("TileMap")
+onready var tile_map : TileMap = get_tree().get_current_scene().get_node("Navigation2D/TileMap")
 enum {WALL, FLOOR}
 var velocity : Vector2 = Vector2.ZERO
 
@@ -29,8 +29,9 @@ func _physics_process(delta):
 				attack()
 
 func isInWall():
+	var wall = $WallCheck.get_overlapping_areas()
 	var tile_id = tile_map.get_cellv(tile_map.world_to_map(position - position.direction_to(player.position).normalized() * 16))
-	return tile_id == WALL
+	return tile_id == WALL or wall.size() > 0
 
 func tick(delta):
 	attack_tick += delta

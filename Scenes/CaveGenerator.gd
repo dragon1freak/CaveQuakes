@@ -1,9 +1,9 @@
 extends Node
 
-export var min_width : int = 50
-export var max_width : int = 200
-export var min_height : int = 25
-export var max_height : int = 100
+export var min_width : int = 60
+export var max_width : int = 600
+export var min_height : int = 30
+export var max_height : int = 300
 var width : int
 var height : int
 export var wall_percent : float
@@ -12,7 +12,7 @@ var cells = []
 var wall_char = "#"
 var floor_char = " "
 var rng = RandomNumberGenerator.new()
-enum {WALL, FLOOR}
+enum {WALL, FLOOR, SPAWN}
 
 export var MAX_OBJECTIVES : int = 5
 var objective : PackedScene = preload("res://Scenes/Objective.tscn")
@@ -28,11 +28,11 @@ func generate_level():
 	var difficulty : int = WorldManager.difficulty
 	self.tile_map = get_parent() as TileMap
 	rng.randomize()
-	wall_percent = rng.randi_range(25, 35)
+	wall_percent = rng.randi_range(30, 40)
 
 	if difficulty != 0 and width < max_width:
 			width += 10
-			height += 5
+			height += 10
 
 	clear()
 	generateroomlist()
@@ -41,7 +41,7 @@ func generate_level():
 	clearObjectivePositions(objective_positions)
 	runAutomata()
 	createPlayerSpawn()
-
+	tile_map.update_dirty_quadrants()
 	WorldManager.level_ready(tile_map)
 
 # Generates the array used to contain the room
@@ -50,15 +50,14 @@ func generateroomlist() -> void:
 		cells.append([])
 		for y in width:
 			cells[x].append(floor_char)
-			_set_autotile(y, x, false)
+			_set_autotile(y, x, FLOOR)
 
 func seedRoom() -> void:
 	for x in height:
 		for y in width:
 			if rng.randf() <= wall_percent/100 and !(x in [(height / 2) - 1, height / 2, (height / 2) - 1]):
 				cells[x][y] = wall_char
-				_set_autotile(y, x)
-	
+				_set_autotile(y, x, WALL)
 
 func runAutomata(iterations : int = 4) -> void: 
 	var width_midpoint = width / 2
@@ -90,17 +89,20 @@ func checkQuadrant(widthStart, widthEnd, heightStart, heightEnd):
 								walls += 1
 			if walls >= wallsNeeded:
 				cells[x][y] = wall_char
-				_set_autotile(y, x)
+				_set_autotile(y, x, WALL)
 			else:
 				cells[x][y] = floor_char
-				_set_autotile(y, x, false)
+				_set_autotile(y, x, FLOOR)
 
 func createPlayerSpawn():
 	for x in range(height / 2 - 4, height / 2 + 4):
 		for y in range(0, 15):
-			_set_autotile(y, x, false)
+			if y < 4:
+				_set_autotile(y, x, SPAWN)
+			else:
+				_set_autotile(y, x, FLOOR)
 	var new_gate = gate.instance()
-	new_gate.global_position = Vector2(0, height * tile_map.cell_size.y / 2 - 4 * tile_map.cell_size.y)
+	new_gate.global_position = Vector2(0, height / 2 * tile_map.cell_size.y - 4 * tile_map.cell_size.y)
 	get_tree().get_current_scene().call_deferred("add_child", new_gate)
 
 # Check if its too close to other objectives in future
@@ -110,7 +112,7 @@ func placeObjectives(amount : int = 3):
 	for i in amount:
 		var placement_position = Vector2.ZERO
 		while !placement_position:
-			var test_position = Vector2(rng.randi_range(width * tile_map.cell_size.x / 4, width * tile_map.cell_size.x - tile_map.cell_size.x), rng.randi_range(objective_radius * tile_map.cell_size.y, height * tile_map.cell_size.y - tile_map.cell_size.y))
+			var test_position = Vector2(rng.randi_range(width * tile_map.cell_size.x / (2 + i), width * tile_map.cell_size.x - tile_map.cell_size.x * 2), rng.randi_range(tile_map.cell_size.y * 2, height * tile_map.cell_size.y - tile_map.cell_size.y * 2))
 			var tile_id = tile_map.get_cellv(tile_map.world_to_map(test_position))
 			if tile_id == FLOOR:
 				placement_position = test_position
@@ -129,18 +131,11 @@ func clearObjectivePositions(positions):
 		for x in range(space_start.x, space_end.x):
 			for y in range(space_start.y, space_end.y):
 				cells[y][x] = floor_char
-				_set_autotile(x, y, false)
+				_set_autotile(x, y, FLOOR)
 
 func clear() -> void:
 	self.tile_map.clear()
 
-func _set_autotile(x : int, y : int, isWall : bool = true) -> void:
-	self.tile_map.set_cell(x, y, self.tile_map.get_tileset().get_tiles_ids()[0 if isWall else 1], false, false, false, self.tile_map.get_cell_autotile_coord(x, y))
+func _set_autotile(x : int, y : int, tileId : int) -> void:
+	self.tile_map.set_cell(x, y, self.tile_map.get_tileset().get_tiles_ids()[tileId], false, false, false, self.tile_map.get_cell_autotile_coord(x, y))
 	self.tile_map.update_bitmask_area(Vector2(x, y))
-
-func printRoom() -> void:
-	for x in range(height):
-		var line = ""
-		for y in range(width):
-			line += cells[x][y]
-		print(line)

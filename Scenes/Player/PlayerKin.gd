@@ -26,24 +26,27 @@ var rng = RandomNumberGenerator.new()
 var objectives = []
 onready var pointers = get_tree().get_nodes_in_group("pointers")
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	WorldManager.player_ready(self)
 	rng.randomize()
 	var camera : Camera2D = $Camera2D
 	if camera:
-		var tilemap = get_parent().get_node("TileMap")
+		var tilemap = get_parent().get_node("Navigation2D/TileMap")
 		var tilemap_rect = tilemap.get_used_rect()
 		camera.limit_left = tilemap_rect.position.x * tilemap.cell_size.x
 		camera.limit_top = tilemap_rect.position.y * tilemap.cell_size.y
 		camera.limit_right = camera.limit_left + tilemap_rect.size.x * tilemap.cell_size.x
 		camera.limit_bottom = camera.limit_top + tilemap_rect.size.y * tilemap.cell_size.y
-	pointers
 
 var fire_rate_counter : float = 0
 func _physics_process(delta):
 	if Input.is_action_pressed("fire") and can_fire:
 		fire()
+		$Gun/Barrel/Flare.emitting = true
+		$Gun/AnimationPlayer.play("Fire")
+	elif Input.is_action_just_released("fire"):
+		$Gun/Barrel/Flare.emitting = false
+		$Gun/AnimationPlayer.play("Idle")
 	if !can_fire:
 		fire_rate_counter += delta
 		if fire_rate_counter >= fire_rate:
@@ -72,6 +75,10 @@ func get_input_axis() -> Vector2:
 			Input.get_action_strength("right") - Input.get_action_strength("left"), 
 			Input.get_action_strength("down") - Input.get_action_strength("up")
 		)
+	if input.x < 0:
+		$PlayerSprite.flip_h = true
+	elif input.x > 0:
+		$PlayerSprite.flip_h = false
 	return input.normalized()
 
 func apply_friction(friction : float) -> void:
@@ -88,7 +95,8 @@ func fire():
 	$Sounds/Shoot.play()
 	can_fire = false
 	var bullet_instance = bullet.instance()
-	bullet_instance.position = $Gun.global_position
+	bullet_instance.player = self
+	bullet_instance.position = $Gun/Barrel.global_position
 	bullet_instance.direction = $Gun.global_position.direction_to(get_global_mouse_position()).rotated(deg2rad(rng.randf_range(-accuracy, accuracy)))
 	get_tree().get_root().add_child(bullet_instance)
 
@@ -105,6 +113,7 @@ func take_damage(damage : int = 1):
 			get_tree().set_group("harvesters", "player", null)
 			self.visible = false
 			GuiManager.toggle_pause_menu(true)
+			GuiManager.toggle_dettimer(false)
 			set_physics_process(false)
 
 func set_obj_pointers():
@@ -143,11 +152,12 @@ func _on_PlantRange_body_exited(body):
 		if $PlantRange.get_overlapping_bodies().size() <= 0:
 			plant_target = null
 			$PlantNotifier.visible = false
+			can_plant = false
 		else:
 			plant_target = $PlantRange.get_overlapping_bodies()[0]
 
-func _on_harvester_removed(harvester):
-	harvester.disconnect("removed", self, "_on_harvester_removed")
+func _on_harvester_removed(_harvester):
+	_harvester.disconnect("removed", self, "_on_harvester_removed")
 	planted = false
 	can_plant = false
 	plant_target = null
